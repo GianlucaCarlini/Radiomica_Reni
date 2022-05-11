@@ -7,7 +7,7 @@ import os
 # %% wrapping up
 
 data = os.listdir("DATA")
-metrics = [file for file in data if "metrics" in file]
+metrics = [file for file in data if ("metrics" in file) and (not ("cutoff" in file))]
 
 names = []
 roc_aucs = []
@@ -18,7 +18,7 @@ f1s = []
 for file in metrics:
 
     temp = pd.read_csv(os.path.join("./Data", file))
-    names.append(file)
+    names.append(file[8:-4])
     roc_aucs.append(
         f"{round(temp.iloc[:, 2].mean(), 3)} \u00B1 {round(temp.iloc[:, 2].std(), 3)}"
     )
@@ -33,7 +33,7 @@ for file in metrics:
     )
 
 wrap = {
-    "name": names,
+    "Name": names,
     "roc auc (avg \u00B1 std)": roc_aucs,
     "precision (avg \u00B1 std)": precisions,
     "recall (avg \u00B1 std)": recalls,
@@ -44,5 +44,5 @@ wrap = {
 
 dataframe = pd.DataFrame.from_dict(wrap)
 
-dataframe.to_csv("statistics_summary.csv", index=False)
+dataframe.to_csv("statistics_summary_no_cutoff.csv", index=False)
 # %%
